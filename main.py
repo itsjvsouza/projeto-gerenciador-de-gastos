@@ -11,6 +11,7 @@ while True:
 
             if d == 1:
                 data = datetime.today()
+                data_usuario = data.strftime('%d/%m/%Y')
                 
             elif d == 2:
                 data_usuario = str(input('Digite a data (DD/MM/YYYY): '))
@@ -24,10 +25,16 @@ while True:
             descricao = str(input('Descrição: '))
             valor = float(input('Valor: R$'))
             forma = str(input('Forma (Pix ou Crédito): '))
-            confirmacao = int(input(f'{data}, {descricao}, {valor}, {forma} \n1 - Sim \n2 - Não \n\nOs dados estão corretos? '))
+            confirmacao = int(input(f'{data_usuario}, {descricao}, {valor}, {forma} \n1 - Sim \n2 - Não \n\nOs dados estão corretos? '))
 
             if confirmacao == 1:
-                print('Gasto salvo com sucesso!')
+                linha = (f'{data}, {descricao}, {valor}, {forma}')
+
+                with open('data/gastos.csv', 'a') as arquivo:
+                    arquivo.write(linha)
+                
+                print('\nGasto salvo com sucesso!')
+                break
             
-            elif confirmacao == 2:
+            else:
                 continue
