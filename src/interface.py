@@ -77,3 +77,18 @@ MENU_EXCLUIR = """
 13 - Voltar
 
 Excluir gastos de que mês? """
+
+MENU_REPETIR_EXCLUSAO = """
+Deseja excluir outro gasto?
+
+1 - Sim
+2 - Não
+
+Opção: """
+
+MENU_CONFIRMACAO_EXCLUSAO = """
+
+1 - Sim
+2 - Não
+
+Deseja escluir esse gasto? """

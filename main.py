@@ -1,16 +1,16 @@
-from src.interface import MENU_PRINCIPAL, MENU_DATA, MENU_PAGAMENTO, MENU_CONFIRMACAO, MENU_REPETIR_GASTO, MENU_MES, MENU_REPETIR_CONSULTA, MENU_EXCLUIR
+import src.interface as ui
 from datetime import datetime, date
 import os
 os.system('cls')
 
 while True:
 
-    inicio = int(input(MENU_PRINCIPAL))
+    inicio = int(input(ui.MENU_PRINCIPAL))
 
     if inicio == 1:
 
         while True:
-            escolha = int(input(MENU_DATA))
+            escolha = int(input(ui.MENU_DATA))
 
             if escolha == 1:
                 data = date.today()
@@ -30,7 +30,7 @@ while True:
 
             descricao = str(input('\nDescrição: '))
             valor = float(input('\nValor: R$'))
-            forma = str(input(MENU_PAGAMENTO))
+            forma = str(input(ui.MENU_PAGAMENTO))
 
             if forma == '1':
                 forma = 'Pix'
@@ -38,7 +38,7 @@ while True:
             elif forma == '2':
                 forma = 'Crédito'
 
-            confirmacao = int(input(f"{data_usuario}, {descricao}, R${valor}, {forma}" + MENU_CONFIRMACAO))
+            confirmacao = int(input(f"\n{data_usuario}, {descricao}, R${valor}, {forma}" + ui.MENU_CONFIRMACAO))
 
             if confirmacao == 1:
                 linha = (f'{data},{descricao},{valor},{forma}\n')
@@ -48,7 +48,7 @@ while True:
                 
                 print('\n\n\033[1;32mGasto salvo com sucesso!\033[m')
                 
-                pergunta = int(input(MENU_REPETIR_GASTO))
+                pergunta = int(input(ui.MENU_REPETIR_GASTO))
 
                 if pergunta == 1:
                     continue
@@ -62,7 +62,7 @@ while True:
     elif inicio == 2:
         
         while True:
-            escolha = int(input(MENU_MES))
+            escolha = int(input(ui.MENU_MES))
             print()
 
             if escolha >= 1 and escolha <=12:  
@@ -84,7 +84,7 @@ while True:
 
                 print(f'\nTotal gasto no mês: R${total}')
                 
-                pergunta = int(input(MENU_REPETIR_CONSULTA))
+                pergunta = int(input(ui.MENU_REPETIR_CONSULTA))
 
                 if pergunta == 1:
                     continue
@@ -101,35 +101,58 @@ while True:
     
     elif inicio == 3:
         
-        escolha = int(input(MENU_EXCLUIR))
+        escolha = int(input(ui.MENU_EXCLUIR))
 
         if escolha >= 1 and escolha <= 12:
             with open('data/gastos.csv', 'r', encoding='utf-8') as arquivo:
                 linhas = arquivo.readlines()
+                enumerate(linhas)
 
-            for i, linha in enumerate(linhas):
-                partes = linha.split(',')
-                data_str = partes[0]
-                data = datetime.strptime(data_str, '%Y-%m-%d')
+            while True:
                 
-                if data.month == escolha:
-                    print(f'\n{i + 1} - {linha}')
+                linhas_mes = []
                 
-                else:
+                for linha in linhas:
+                    partes = linha.split(',')
+                    data_str = partes[0]
+                    data = datetime.strptime(data_str, '%Y-%m-%d')
+
+                    if data.month == escolha:
+                        linhas_mes.append(linha)
                     
-            
-            excluir = int(input('\nDigite o número do gasto que deseja excluir: '))
+                
+                for i in range(len(linhas_mes)):
+                    print(f'\n{i + 1} - {linhas_mes[i]}')  
+                
+                excluir = int(input("\nDigite o número do gasto que deseja excluir: "))
 
-            if excluir >= 1 and excluir <= len(linhas):
-                del linhas[excluir - 1]
+                if excluir >= 1 and excluir <= len(linhas_mes):
 
-                with open('data/gastos.csv', 'w', encoding='utf-8') as arquivo:
-                    arquivo.writelines(linhas)
+                    confirmacao = int(input(f"\n\n\033[1;31m{linhas_mes[excluir - 1]}\033[m" + ui.MENU_CONFIRMACAO_EXCLUSAO))
 
-                print('\n\033[1;32mGasto excluído com sucesso!\033[m')
+                    if confirmacao == 1:
+                        linhas.remove(linhas_mes[excluir - 1])
+                        del linhas_mes[excluir - 1]
 
-            else:
-                print('\nNúmero inválido.')
+                        with open('data/gastos.csv', 'w', encoding='utf-8') as arquivo:
+                            arquivo.writelines(linhas)
+
+                        print('\n\033[1;32mGasto excluído com sucesso!\033[m')
+
+                        pergunta = int(input(ui.MENU_REPETIR_EXCLUSAO))
+
+                        if pergunta == 1:
+                            continue
+
+                        else:
+                            break
+
+                    else:
+                        continue
+                    
+                else:
+                    print('\nNúmero inválido.')
+                    continue
 
     elif inicio == 4:
         break
